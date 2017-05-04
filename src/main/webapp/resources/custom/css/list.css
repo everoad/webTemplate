@@ -1,0 +1,67 @@
+@CHARSET "UTF-8";
+
+.navbar-right i {
+	font-size: 25px;
+	color: #aaa;
+}
+
+
+.navbar-nav i:hover {
+	color: #5fb611;
+}
+ .middle-nav {
+ 	border: 1px solid #ddd;
+	height: 58.13px;
+	background: white;
+}
+
+ 
+.search-box {
+	padding: 11px;
+	border: 1px solid #ddd;
+	background: white;
+	text-align: center;
+}
+
+
+.aside-box  {
+	background: white;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	border: 1px solid #ddd;
+	padding: 10px;
+}
+
+.aside-box h4 {
+	color: #5fb611;
+}
+
+.project-share, .projects {
+	border :1px solid #ddd !important;
+}
+
+.gridbox {
+	text-align: center;
+}
+
+.grid-article {
+	margin-top: 20px;
+}
+
+.grid-out-box {
+	margin-top: 30px;
+}
+
+.gridbox:hover {
+	box-shadow : 0 0 10px gray;
+}
+
+.grid-content {
+	overflow: hidden;
+}
+
+@media screen and (max-width: 768px) {
+	.navbar-right {
+		display: none;
+	}
+}

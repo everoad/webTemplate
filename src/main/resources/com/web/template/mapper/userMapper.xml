@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.template.mapper.UserMapper">
+
+	<insert id="addUser">
+		INSERT INTO user(user_email, user_nick, user_pwd, user_jdate, enabled, social_type)
+		VALUES (#{user_email}, #{user_nick}, #{user_pwd}, now(), true, #{social_type})
+	</insert>
+	
+	<insert id="addRole">
+		INSERT INTO user_role(user_email, user_role)
+		VALUES (#{user_email}, #{user_role})
+	</insert>
+	
+	<select id="checkNickname" parameterType="HashMap" resultType="String">
+		SELECT user_nick FROM user WHERE user_nick = #{user_nick}
+	</select>
+	
+	<select id="getUser" parameterType="String" resultType="UserVO">
+		SELECT user_email, user_nick, user_pwd, enabled
+		FROM user
+		WHERE user_email = #{user_email}
+	</select>
+	
+	<select id="getRole" parameterType="String" resultType="RoleVO">
+		SELECT user_role 
+		FROM user_role
+		WHERE user_email = #{user_email}
+	</select>
+	
+	<update id="outUser" parameterType="String">
+		UPDATE user SET enabled = false
+		WHERE user_email = #{user_email}
+	</update>
+	
+	<update id="updateIntroduction" parameterType="HashMap">
+		UPDATE user SET introduction = #{introduction}
+		WHERE user_email = (SELECT user_email FROM user_role WHERE user_role = 'ROLE_ADMIN')
+	</update>
+	
+	<resultMap type="HashMap" id="userMap">
+		<result javaType="String" property="introduction" column="introduction" />
+		<result javaType="String" property="user_email" column="user_email" />
+	</resultMap>
+	
+	<select id="getIntroduction" resultMap="userMap">
+		SELECT user_email, introduction FROM user
+		NATURAL JOIN user_role
+		WHERE user_role = 'ROLE_ADMIN'
+	</select>
+	
+
+</mapper>

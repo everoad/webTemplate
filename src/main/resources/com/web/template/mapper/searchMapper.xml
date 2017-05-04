@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.template.mapper.SearchMapper">
+
+	<resultMap type="HashMap" id="searchMap">
+		<result javaType="String" column="skey" property="skey" />
+		<result javaType="String" column="count" property="count" />
+	</resultMap>
+
+
+	<select id="getPopularAll" resultMap="searchMap">
+		SELECT skey, count(*) AS count
+		FROM search_log
+		GROUP BY skey
+		ORDER BY count DESC
+		LIMIT 0, 7
+	</select>
+	
+	
+	<insert id="setLog" parameterType="HashMap">
+		INSERT INTO search_log(skey, user_email, search_date)
+		VALUES (#{skey}, #{user_email}, now())
+	</insert>
+
+</mapper>

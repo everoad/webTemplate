@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	
+	<security:http use-expressions="true" >
+		<!-- login page 설정. -->
+		<security:form-login
+			login-page="/user/login" 
+			username-parameter="user_email"
+			password-parameter="user_pwd"
+			login-processing-url="/j_spring_security_check"
+			authentication-details-source-ref="customWebAuthenticationDetailsSource"
+			authentication-failure-handler-ref="customAuthenticationFailureHandler"
+			authentication-success-handler-ref="customAuthenticationSuccessHandler"
+		 />
+		
+		<!-- logout 설정 -->
+		<security:logout logout-url="/user/logout" logout-success-url="/"/>
+		
+		<security:csrf disabled="true" />
+		
+		<!-- security 기본으로 iframe을 막음. smart editor 사용을 위한 설정 -->
+		<security:headers>
+			<security:frame-options disabled="true"/>
+		</security:headers>
+	   	
+	   	<security:session-management>
+	   		<security:concurrency-control max-sessions="1"  />
+	   	</security:session-management>
+	   	
+	</security:http>
+	
+	<!-- 로그인후 처리 Bean -->
+	<bean id="customAuthenticationSuccessHandler" class="com.web.template.security.CustomAuthenticationSuccessHandler"/>
+	<!-- 로그인 실패시 처리 Bean -->
+	<bean id="customAuthenticationFailureHandler" class="com.web.template.security.CustomAuthenticationFailurehandler" />
+	<!-- 로그인 로직 수행 Bean -->
+	<bean id="customAuthenticationProvider" class="com.web.template.security.CustomAuthenticationProvider"/>
+	
+	<bean id="customWebAuthenticationDetailsSource" class="com.web.template.security.CustomWebAuthenticationDetailsSource" />
+	
+	<!-- 로그인 로직 수행 Manager -->
+	<security:authentication-manager>
+		<security:authentication-provider ref="customAuthenticationProvider"/>
+	</security:authentication-manager>
+	
+	 
+</beans>

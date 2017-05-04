@@ -1,0 +1,41 @@
+@CHARSET "EUC-KR";
+
+.breadcrumb {
+	width: 100%;
+	font-size: 13px;
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.breadcrumb .active a {
+	color: #72c02c !important;
+}
+
+.table {
+	text-align: center;
+}
+
+.menu {
+	background: white;
+	border: 1px solid #ddd;
+	margin-top: 30px;
+	margin-bottom: 10px;
+	padding: 40px;
+}
+
+.replydeletebtn {
+	float: right;
+	padding-top: 1px;
+	padding-bottom: 2px;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+.custom-headline {
+	text-decoration: none !important;
+	border-bottom: 2px solid #5fb611;
+}
+
+.custom-headline:focus {
+	color: #72c02c !important;
+}

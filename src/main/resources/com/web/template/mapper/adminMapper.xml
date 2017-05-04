@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.template.mapper.AdminMapper">
+	
+	<resultMap type="HashMap" id="menuFirMap">
+		<result javaType="Object" column="menu_fir_seq" property="menu_fir_seq"/>
+		<result javaType="Object" column="menu_fir_name" property="name"/>
+		<result javaType="Object" column="menu_fir_type" property="type"/>
+		<result javaType="Object" column="menu_fir_active" property="active"/>
+		<result javaType="Object" column="menu_fir_index" property="index"/>
+	</resultMap>
+
+	<resultMap type="HashMap" id="menuSecMap">
+		<result javaType="String" column="menu_sec_seq" property="menu_sec_seq"/>
+		<result javaType="String" column="menu_sec_name" property="name"/>
+		<result javaType="String" column="menu_sec_type" property="type"/>
+		<result javaType="String" column="menu_fir_seq" property="menu_fir_seq"/>
+		<result javaType="String" column="menu_sec_index" property="index"/>
+		<result javaType="Object" column="menu_sec_active" property="active"/>
+	</resultMap>
+	
+	<select id="getMenuFir" resultMap="menuFirMap">
+		SELECT menu_fir_seq, menu_fir_name, menu_fir_type, menu_fir_active, menu_fir_index 
+		FROM menu_fir ORDER BY menu_fir_index
+	</select>
+	
+	<select id="getMenuSec" parameterType="String" resultMap="menuSecMap">	
+		SELECT menu_sec_seq, menu_sec_name, menu_sec_type, menu_fir_seq , menu_sec_active, menu_sec_index 
+		FROM menu_sec WHERE menu_fir_seq = #{menu_fir_seq} ORDER BY menu_sec_index
+	</select>
+	
+	<insert id="addMenuFir" useGeneratedKeys="true" keyProperty="menu_fir_seq">
+		INSERT INTO menu_fir(menu_fir_name, menu_fir_type, menu_fir_index, menu_fir_active)
+		VALUES (#{name}, #{type}, #{index}, #{active})
+	</insert>
+	
+	<update id="editMenuFir">
+		UPDATE menu_fir SET menu_fir_name = #{name}, menu_fir_type = #{type}, menu_fir_index = #{index}, menu_fir_active = #{active}
+		WHERE menu_fir_seq = #{menu_fir_seq}
+	</update>
+	
+	<insert id="addMenuSec">
+		INSERT INTO menu_sec(menu_sec_name, menu_sec_type, menu_fir_seq, menu_sec_index, menu_sec_active)
+		VALUES (#{name}, #{type}, #{menu_fir_seq}, #{index}, #{active})
+	</insert>
+	
+	<update id="editMenuSec">
+		UPDATE menu_sec SET menu_sec_name = #{name}, menu_sec_type = #{type}, menu_sec_index = #{index}, menu_sec_active = #{active} 
+		WHERE menu_sec_seq = #{menu_sec_seq}
+	</update>
+	
+	<delete id="deleteMenuFir">
+		DELETE FROM menu_fir 
+		WHERE menu_fir_seq = #{menu_fir_seq}
+	</delete>
+	
+	<delete id="deleteMenuSec">
+		DELETE FROM menu_sec
+		WHERE menu_sec_seq = #{menu_sec_seq}
+	</delete>
+	
+	<update id="editHome" parameterType="HomeVO">
+		UPDATE home 
+		<set>
+			<if test="home_name != ''">home_name = #{home_name},</if>
+			<if test="home_logo != null">home_logo = #{home_logo},</if>
+			<if test="home_img != null">home_img = #{home_img},</if>
+		</set>
+		WHERE flag = 1
+	</update>
+
+</mapper>

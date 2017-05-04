@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.template.mapper.BoardMapper">
+
+	<select id="getDetail" parameterType="String" resultType="BoardVO">
+		SELECT board_seq, title, content, user_nick, board.user_email user_email,  date_format(reg_date, '%y-%m-%d') AS reg_date, hit_count, reply_count, menu_fir_seq, menu_sec_seq 
+		FROM board 
+		JOIN user
+		ON user.user_email = board.user_email
+		WHERE board_seq = #{board_seq}
+	</select>
+
+	<insert id="addBoard" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="board_seq">
+		INSERT INTO board(title, content, reg_date, hit_count, reply_count, front_img, user_email, menu_fir_seq, menu_sec_seq)
+		VALUES (#{title}, #{content}, now(), 0, 0, #{front_img}, #{user_email}, #{menu_fir_seq}, #{menu_sec_seq})
+	</insert>
+	
+	<update id="editBoard" parameterType="BoardVO">
+		UPDATE board 
+		SET title = #{title}, content = #{content} , front_img = #{front_img}
+		WHERE board_seq = #{board_seq}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="String">
+		DELETE FROM board WHERE board_seq = #{board_seq}
+	</delete>
+	
+	<select id="getMenuFir" resultType="MenuFirVO">
+		SELECT menu_fir_seq, UPPER(menu_fir_name) menu_fir_name, menu_fir_type
+		FROM menu_fir 
+		WHERE menu_fir_active = 'active'
+		ORDER BY menu_fir_index
+	</select>
+	
+	<select id="getMenuSec" parameterType="String" resultType="MenuSecVO">
+		SELECT menu_sec_seq, UPPER(menu_sec_name) menu_sec_name, menu_sec_type, menu_fir_seq
+		FROM menu_sec
+		WHERE menu_fir_seq = #{menu_fir_seq}
+		AND menu_sec_active = 'active'
+		ORDER BY menu_sec_index
+	</select>
+	
+	<select id="getMainList" parameterType="SearchVO" resultType="BoardVO">
+		SELECT board_seq, title, date_format(reg_date, '%y-%m-%d') AS reg_date, hit_count, reply_count, front_img, user_nick, board.menu_fir_seq, board.menu_sec_seq, menu_sec_name 
+		FROM board
+		JOIN user
+		ON user.user_email = board.user_email
+		JOIN menu_sec
+		ON board.menu_sec_seq = menu_sec.menu_sec_seq
+		<where>
+			board.menu_fir_seq = #{menu_fir_seq}
+			AND menu_sec.menu_sec_active = 'active'
+			<if test="skeyList != null">
+				AND (
+				<foreach collection="skeyList" item="item" index="index">
+					title LIKE CONCAT('%', #{item}, '%')
+					OR content LIKE CONCAT('%', #{item}, '%')
+					OR user_nick LIKE CONCAT('%', #{item}, '%')
+				</foreach>
+				)
+			</if>
+		</where>
+		ORDER BY board_seq DESC
+		LIMIT 0, 5
+	</select>
+	
+	<select id="getList" parameterType="SearchVO" resultType="BoardVO">
+		SELECT board_seq, title, date_format(reg_date, '%y-%m-%d') AS reg_date, content, hit_count, reply_count, front_img, user_nick, board.menu_fir_seq, board.menu_sec_seq, menu_sec_name 
+		FROM board
+		JOIN user
+		ON user.user_email = board.user_email
+		JOIN menu_sec
+		ON board.menu_sec_seq = menu_sec.menu_sec_seq
+		<where>
+			AND board.menu_sec_seq = #{menu_sec_seq}
+			AND board.menu_fir_seq = #{menu_fir_seq}
+			<if test="skeyList != null">
+				AND (
+				<foreach collection="skeyList" item="item" index="index">
+					title LIKE CONCAT('%', #{item}, '%')
+					OR content LIKE CONCAT('%', #{item}, '%')
+					OR user_nick LIKE CONCAT('%', #{item}, '%')
+				</foreach>
+				)
+			</if>
+		</where>
+		ORDER BY board_seq DESC
+		LIMIT #{start}, #{dataPerPage}
+	</select>
+	
+	<select id="getTotalDataNum" parameterType="SearchVO" resultType="int">
+		SELECT count(*) total
+		FROM board
+		JOIN user
+		ON user.user_email = board.user_email
+		<where>
+			AND board.menu_sec_seq = #{menu_sec_seq}
+			AND board.menu_fir_seq = #{menu_fir_seq}
+			<if test="skeyList != null">
+				AND (
+				<foreach collection="skeyList" item="item" index="index">
+					title LIKE CONCAT('%', #{item}, '%')
+					OR content LIKE CONCAT('%', #{item}, '%')
+					OR user_nick LIKE CONCAT('%', #{item}, '%')
+				</foreach>
+				)
+			</if>
+		</where>
+	</select>
+	
+	<update id="hitCount" parameterType="String">
+		UPDATE board SET hit_count = hit_count + 1 
+		WHERE board_seq = #{board_seq}
+	</update>
+	
+	<select id="getHomeInfo" resultType="HomeVO">
+		SELECT * FROM home WHERE flag = 1
+	</select>
+	
+	<resultMap type="HashMap" id="replyMap">
+		<result javaType="String" property="reply_seq" column="reply_seq"/>
+		<result javaType="String" property="content" column="content"/>
+		<result javaType="String" property="user_email" column="user_email"/>
+		<result javaType="String" property="user_nick" column="user_nick"/>
+		<result javaType="String" property="reg_date" column="reg_date"/>
+		<result javaType="String" property="board_seq" column="board_seq"/>
+	</resultMap>
+	
+	<select id="getReplyList" parameterType="String" resultMap="replyMap">
+		SELECT reply_seq, content, reply.user_email user_email, user.user_nick user_nick,  date_format(reg_date, '%y-%m-%d') AS reg_date, board_seq
+		FROM reply 
+		JOIN user
+		ON user.user_email = reply.user_email
+		WHERE board_seq = #{board_seq}
+		ORDER BY reply_seq DESC
+	</select>
+	
+	<insert id="addReply" parameterType="HashMap">
+		INSERT INTO reply(content, user_email, reg_date, board_seq)
+		VALUES (#{content}, #{user_email}, now(), #{board_seq})
+	</insert>
+	
+	<delete id="deleteReply" parameterType="String" >
+		DELETE FROM reply WHERE reply_seq = #{reply_seq}
+	</delete>
+	
+	<select id="getRecentAll" resultType="BoardVO">
+		SELECT title, user_nick,  date_format(reg_date, '%y-%m-%d') AS reg_date, board_seq, board.menu_fir_seq, board.menu_sec_seq, menu_sec_name  
+		FROM board
+		JOIN user
+		ON user.user_email = board.user_email
+		JOIN menu_sec
+		ON board.menu_sec_seq = menu_sec.menu_sec_seq
+		ORDER BY board_seq DESC
+		LIMIT 0, 5
+	</select>
+	
+	<select id="getBestAll" resultType="BoardVO">
+		SELECT title, user_nick,  date_format(reg_date, '%y-%m-%d') AS reg_date, board_seq, board.menu_fir_seq, board.menu_sec_seq, menu_sec_name  
+		FROM board
+		JOIN user
+		ON user.user_email = board.user_email
+		JOIN menu_sec
+		ON board.menu_sec_seq = menu_sec.menu_sec_seq
+		ORDER BY hit_count DESC
+		LIMIT 0, 5
+	</select>
+	
+	<select id="getBoardAll" resultType="String">
+		SELECT content FROM board
+	</select>
+	
+	<insert id="addReferer" parameterType="String">
+		INSERT INTO referer(refererURL, reg_date) VALUES (#{refererURL}, now())
+	</insert>
+
+</mapper>

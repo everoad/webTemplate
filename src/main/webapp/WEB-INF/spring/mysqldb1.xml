@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- AWS -->
+<properties>
+	<comment>MySql Database</comment>
+	<entry key="driverClassName">com.mysql.jdbc.Driver</entry>
+	<entry key="username">admin</entry>
+	<entry key="password">!kbj704302</entry>
+	<entry key="url">jdbc:mysql://webtemplate.cieold6rx1u1.ap-northeast-2.rds.amazonaws.com:3306/webtemplate?user=admin</entry>
+</properties>
