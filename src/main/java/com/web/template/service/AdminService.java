@@ -13,9 +13,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.web.template.constance.Const;
 import com.web.template.mapper.AdminMapper;
 import com.web.template.mapper.BoardMapper;
+import com.web.template.sub.Const;
 import com.web.template.vo.HomeVO;
 
 @Service
@@ -128,7 +128,7 @@ public class AdminService {
 
 		
 		//upload 폴더에서 이미지 파일 목록 가져오기
-		String path = Const.LINUX_UPLOAD_PATH;
+		String path = Const.UPLOAD_PATH;
 		//삽입, 삭제가 용이한 LinkedList로 이루어진 LinkedHashMap 사용.
 		Map<String, File> map = new LinkedHashMap<>();
 		

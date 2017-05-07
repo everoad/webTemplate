@@ -2,6 +2,7 @@ package com.web.template.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,10 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.web.template.constance.SubSystem;
 import com.web.template.security.CustomUserDetails;
 import com.web.template.service.BoardService;
 import com.web.template.service.UserService;
+import com.web.template.sub.Const;
+import com.web.template.sub.SubSystem;
 import com.web.template.vo.BoardListVO;
 import com.web.template.vo.MenuFirVO;
 import com.web.template.vo.SearchVO;
@@ -43,16 +46,18 @@ public class MainController {
 	
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public String mainView(
-			@AuthenticationPrincipal CustomUserDetails details,
-			SearchVO searchVo, Model model) throws Exception {
+	public String mainView(@AuthenticationPrincipal CustomUserDetails details,
+										SearchVO searchVo, Model model) throws Exception {
+
+		BoardListVO boardListVo = null;
 		
 		List<BoardListVO> list = new ArrayList<>();
 		List<MenuFirVO> menuList = boardService.getMenuList();
 		
+		
 		for(MenuFirVO vo : menuList) {
 			searchVo.setMenu_fir_seq(vo.getMenu_fir_seq());
-			BoardListVO boardListVo = boardService.getMainList(searchVo);
+			boardListVo = boardService.getMainList(searchVo);
 			boardListVo.setMenu_fir_seq(vo.getMenu_fir_seq());
 			boardListVo.setMenu_fir_name(vo.getMenu_fir_name());
 			list.add(boardListVo);
@@ -63,6 +68,7 @@ public class MainController {
 			subSystem.publishMyEvent(skey, details);			
 		}
 		
+    	
 		model.addAttribute("device", subSystem.checkDevice());
 		model.addAttribute("list", list);
 		model.addAttribute("homeVo", boardService.getHomeInfo());
@@ -74,7 +80,7 @@ public class MainController {
 	
 	
 	@RequestMapping(value="about", method=RequestMethod.GET)
-	public String aboutView(Model model) {
+	public String aboutView(Model model) throws Exception {
 		
 		model.addAttribute("homeVo", boardService.getHomeInfo());
 		model.addAttribute("menuList", boardService.getMenuList());
@@ -86,19 +92,20 @@ public class MainController {
 	
 	
 	
-	
+	@Secured(Const.ROLE_ADMIN)
 	@RequestMapping(value="profile", method=RequestMethod.GET, produces="application/json")
-	public @ResponseBody Map<String, String> getProfile(
-													@AuthenticationPrincipal CustomUserDetails user) {
-		Map<String, String> map = userService.getIntroduction();
+	public @ResponseBody Map<String, Object> getProfile(@AuthenticationPrincipal CustomUserDetails user) throws Exception {
+		Map<String, Object> map = userService.getIntroduction();
 		
 		if (user != null) {
 			Collection<? extends GrantedAuthority> auths = user.getAuthorities();
 			
 			for(GrantedAuthority auth : auths) {
 				if (auth.getAuthority().equals("ROLE_ADMIN"))  {
-					map.put("authorize", "true");
-				}				
+					map.put("authorize", true);
+				}	else {
+					map.put("authorize", false);
+				}
 			}
 		}
 		return map;
@@ -107,9 +114,9 @@ public class MainController {
 	
 	
 	
-	
+	@Secured(Const.ROLE_ADMIN)
 	@RequestMapping(value="profile", method=RequestMethod.PUT, produces="application/json")
-	public @ResponseBody Map<String, Boolean> updateProfile(@RequestBody Map<String, String> map) {
+	public @ResponseBody Map<String, Boolean> updateProfile(@RequestBody Map<String, String> map) throws Exception {
 		return userService.updateIntroduction(map);
 	}
 	
@@ -120,7 +127,7 @@ public class MainController {
 	
 	
 	@RequestMapping(value="denied", method=RequestMethod.GET)
-	public String denied(HttpServletRequest req, HttpServletResponse res) {
+	public String denied(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		return "denied";
 	}
 	

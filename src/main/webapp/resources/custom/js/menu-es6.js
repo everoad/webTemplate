@@ -104,10 +104,10 @@ class Menu {
 	
 	add(e, i) {
 		if(e.target.id === 'addBtn') {
-			this.menu_fir.push({ menu_fir_seq: 'new' + this.addIndex++, name: 'new1', type: 'grid', index: this.menu_fir.length + 1, menu_sec: [] });
+			this.menu_fir.push({ menu_fir_seq: 'new' + this.addIndex++, name: 'new1', type: 'grid', index: this.menu_fir.length + 1, menu_sec: [], active: 'active' });
 		} else {
 			var sec = this.menu_fir[i].menu_sec;
-			sec.push({ menu_sec_seq: 'new', name: 'new2', type: 'game', index: sec.length + 1, menu_fir_seq: this.menu_fir[i].menu_fir_seq});
+			sec.push({ menu_sec_seq: 'new', name: 'new2', type: 'game', index: sec.length + 1, menu_fir_seq: this.menu_fir[i].menu_fir_seq, active: 'active' });
 		}
 			this.mkList();
 	}
@@ -170,9 +170,9 @@ class Menu {
 			body +='<label class="radio"><input type="radio"  name="active" value="non-active"><i class="rounded-x"></i>비활성</label><br><br>'
 		} else {
 			body += '<label class="radio"><input type="radio"  name="type" value="game"><i class="rounded-x"></i>게임</label>'
-			body += '<label class="radio"><input type="radio"   name="type" value="entertainer"><i class="rounded-x"></i>연예인</label>'
+			body += '<label class="radio"><input type="radio"  name="type" value="entertainer"><i class="rounded-x"></i>연예인</label>'
 			body += '<label class="radio"><input type="radio"  name="type" value="sports"><i class="rounded-x"></i>스포츠</label><br><br>'
-			body +='<label class="radio"><input type="radio"   name="active" value="active"><i class="rounded-x"></i>활성</label>'
+			body +='<label class="radio"><input type="radio"  name="active" value="active"><i class="rounded-x"></i>활성</label>'
 			body +='<label class="radio"><input type="radio"  name="active" value="non-active"><i class="rounded-x"></i>비활성</label><br><br>'
 		}
 		this.radioBox.innerHTML = body;

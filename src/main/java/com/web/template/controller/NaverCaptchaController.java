@@ -19,16 +19,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.web.template.constance.Const;
+import com.web.template.sub.Const;
 
 @RequestMapping("captcha")
 @Controller
-public class CaptchaController {
+public class NaverCaptchaController {
 	
 	
 	
-	private static final Logger LOGGER = Logger.getLogger(CaptchaController.class);
-
+	private static final Logger LOGGER = Logger.getLogger(NaverCaptchaController.class);
+	
+	
+	private static final String NAVER_CLIENT_ID = "9ukoh9TDWU815iwLmDoH";
+	
+	private static final String NAVER_CLIENT_SECRET = "XGtBlwUAim";
+	
 	
 	
 	@RequestMapping(value="key", method=RequestMethod.GET)
@@ -62,7 +67,7 @@ public class CaptchaController {
 	
 	
 	@RequestMapping(value="image", method=RequestMethod.GET)
-	public void getImage(@RequestParam("key") String key,	HttpServletResponse res) throws Exception {
+	public void getImage(@RequestParam("key") String key, HttpServletResponse res) throws Exception {
 		
 		LOGGER.info("getImageMethod : key=" + key);
 		
@@ -90,6 +95,7 @@ public class CaptchaController {
 			
 			is.close();
 			outputStream.flush();
+			
 		} else {
 			br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             String inputLine;
@@ -145,8 +151,8 @@ public class CaptchaController {
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		
 		conn.setRequestMethod("GET");
-		conn.setRequestProperty("X-Naver-Client-Id", Const.NAVER_CLIENT_ID);
-		conn.setRequestProperty("X-Naver-Client-Secret", Const.NAVER_CLIENT_SECRET);
+		conn.setRequestProperty("X-Naver-Client-Id", NAVER_CLIENT_ID);
+		conn.setRequestProperty("X-Naver-Client-Secret", NAVER_CLIENT_SECRET);
 		
 		return conn;
 	}

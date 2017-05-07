@@ -8,8 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.web.template.constance.Const;
 import com.web.template.mapper.UserMapper;
+import com.web.template.sub.Const;
 import com.web.template.vo.RoleVO;
 import com.web.template.vo.UserVO;
 
@@ -101,7 +101,7 @@ public class UserService {
 	
 	
 	
-	public Map<String, String> getIntroduction() {
+	public Map<String, Object> getIntroduction() {
 		return userMapper.getIntroduction();
 	}
 	

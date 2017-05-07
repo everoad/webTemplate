@@ -4,76 +4,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+<title>${homeVo.home_name}</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="">
-<title>${homeVo.home_name}</title>
 <jsp:include page="../templates/css.jsp" />
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<!-- <link rel="stylesheet" href="/template/resources/custom/css/menu_edit.css"> -->
-  <style media="screen">
-    .leftbox {
-    	background: white;
-		margin: 0;
-		padding: 10px;
-		float: left;
-		border: 1px solid #ddd;
-		width: 48%;
-    }
-    
-    .rightbox {
- 	   background: white;
-		margin: 0;
-		padding: 10px;
-		float: left;
-		border: 1px solid #ddd;
-		width: 48%;
-    }
-    
-    .rightbox form {
-    	padding: 10px;
-    }
-    
-    #list {
-
-    	border: 1px solid #ccc;
-		list-style: none;
-		padding-left: 0;
-    }
-    
-    #list ul {
-		list-style: none;
-    }
-    
-    #list button {
-    	margin: 0px;
-		float: right;
-		height: 27px;
-    }
-    
-    #list span {
-		margin-top: 3px;
-    }
-    
-    #list li {
-    	color: #666;
-    	font-size: 15px;
-    	margin: 3px;
-    	padding: 0;
-  		border: 1px solid #ccc;
-    }
-    
-    .title {
-    	margin: 0px;
-    	padding-left: 10px;
-    	height: 30px;
-    	background: #ddd;
-    	border: 1px solid #ccc;
-    }
-    
-  </style>
+<link rel="stylesheet" href="<c:url value="/resources/custom/css/menu.css" />">
 </head>
 <body>
 <div class="wrapper">
@@ -87,30 +24,62 @@
 			<header>
 				<%@ include file="../templates/front_img.jsp" %>
 			</header>
- 			<div class="container">
- 				<div>
-				    <ul class="pull-left breadcrumb">
-		               <li>
-		               		<a href="<c:url value="/admin/home" />">Home</a>
-		               </li>
-		               <li class="active">
-		               		<a href="javascript:void(0);">Menu</a>
-		               </li>
-		            </ul>
+ 			<div class="container content">
+ 				<div class="col-md-12">
+					<nav class="middle-nav">
+						<ul class="nav navbar-nav navbar-left">
+							<li>
+								<div>
+								     <ul class="pull-left breadcrumb">
+							              <li>
+							              		<a href="<c:url value="/admin/home" />">Home</a>
+							              </li>
+							              <li class="active">
+							              		<a href="javascript:void(0);">Menu</a>
+							              </li>
+							           </ul>
+								</div>
+							</li>
+						</ul>
+					</nav>
 				</div>
- 				
+				 				
  				<div class="content">
-					<div class="leftbox">
-						<button id="addBtn" class="btn btn-default btn-sm">대분류 추가</button>
-						<ul id="list"></ul>
+ 					<div class="col-md-6">
+						<div class="leftbox">
+							<button id="addBtn" class="btn btn-default btn-sm">대분류 추가</button>
+							<ul id="list"></ul>
+						</div> 
 					</div>
-					<div class="rightbox inline-group">
-						<form action="" name="form" class="sky-form">
-							<input type="text" id="title" placeholder="name.."><br><br />
-							<div id="radiobox" class="inline-group">
-							</div>
-						</form>
-						<button id="cplteBtn" class="btn btn-default btn-sm">확인</button>
+					<!-- <div class="leftbox">
+						<button id="addBtn" class="btn btn-default btn-sm">대분류 추가</button>
+							<ul id="list">
+								<li id="">
+								<div class="title">
+									<span id="firTitle-i">  테스트이름1 </span>
+							 		<button id="firDelBtn-i" class="btn btn-default btn-sm">－</button>
+							 	 	<button id="firAddBtn-i" class="btn btn-default btn-sm">＋</button>
+								</div>
+								<ul id="list-i">
+									<li id="j">
+										<div class="title">
+											<span id="secTitle-i-j">테스트이름2</span>
+											<button id="secDelBtn-i-j" class="btn btn-default btn-sm">－</button>
+										</div>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div> -->
+					<div class="col-md-6">
+						<div class="rightbox inline-group">
+							<form action="" name="form" class="sky-form">
+								<input type="text" id="title" class="form-control" placeholder="name.."><br><br />
+								<div id="radiobox" class="inline-group">
+								</div>
+							</form>
+							<button id="cplteBtn" class="btn btn-default btn-sm">확인</button>
+						</div>
 					</div>
 				</div>
  			</div>

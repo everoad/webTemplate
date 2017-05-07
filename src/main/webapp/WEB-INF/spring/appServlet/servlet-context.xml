@@ -48,7 +48,7 @@
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
-	<beans:bean class="com.web.template.constance.SubSystem" />	
+	<beans:bean class="com.web.template.sub.SubSystem" />	
 	<!-- File Upload -->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 

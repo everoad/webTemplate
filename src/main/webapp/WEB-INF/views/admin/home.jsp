@@ -13,6 +13,14 @@
 <meta name="author" content="">
 <title>${homeVo.home_name}</title>
 <jsp:include page="../templates/css.jsp" />
+<style>
+	.middle-nav {
+	 	border: 1px solid #ddd;
+		height: 58.13px;
+		background: white;
+		margin-bottom: 30px;
+	}
+</style>
 </head>
 <body>
 	<div class="wrapper">
@@ -27,16 +35,24 @@
 					<%@ include file="../templates/front_img.jsp" %>
 				</header>
 				<div class="container content">
-					<nav>
-						<ul class="pull-left breadcrumb">
-							<li class="active">
-								<a href="javascript:void(0);">Home</a>
-							</li>
-							<li>
-								<a href="<c:url value="/admin/menu" />">Menu</a>
-							</li>
-						</ul>
-					</nav>
+					<div class="col-md-12">
+						<nav class="middle-nav">
+							<ul class="nav navbar-nav navbar-left">
+								<li>
+									<div>
+									     <ul class="pull-left breadcrumb">
+								              <li>
+								              		<a href="<c:url value="/admin/home" />">Home</a>
+								              </li>
+								              <li class="active">
+								              		<a href="javascript:void(0);">Menu</a>
+								              </li>
+								           </ul>
+									</div>
+								</li>
+							</ul>
+						</nav>
+					</div>
 					
 					<div class="col-md-1"></div>
 					<div class="col-md-9">

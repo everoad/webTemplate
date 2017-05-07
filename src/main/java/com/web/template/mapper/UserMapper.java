@@ -26,6 +26,6 @@ public interface UserMapper {
 	
 	public int updateIntroduction(Map<String, String> map);
 	
-	public Map<String, String> getIntroduction();
+	public Map<String, Object> getIntroduction();
 
 }

@@ -91,7 +91,7 @@
 					<div id="aside-box">
 						<div class="panel panel-profile no-bg">
                             <div class="panel-heading overflow-h">
-                                <h2 class="panel-title heading-sm pull-left"><i class="fa fa-pencil"></i>실시간	 검색어</h2>
+                                <h2 class="panel-title heading-sm pull-left"><i class="fa fa-pencil"></i>실시간 검색어</h2>
                             </div>
                             <div id="scrollbar" class="panel-body no-padding mCustomScrollbar" data-mcs-theme="minimal-dark">
                             
@@ -105,52 +105,11 @@
 	</section>
 </div>
 <%@ include file="./templates/js.jsp" %>
+<script src="<c:url value="/resources/custom/js/popular-Search.js" />"></script>
 <script>
-
-	(function oneTime() {
-		$.ajax({
-			url: '/search/before',
-			type: 'get',
-			success: function (data) {
-				mkList(data);
-			},
-			dataType: 'json'
-		}).done(() => poll());
-	}) ();
-	
-	
-	function poll() {
-		$.ajax({ 
-			url: "/search/after",
-			type: 'get',
-			success: function(data) {
-				mkList(data);				
-			},
-			dataType: "json",
-			complete: poll, 
-			timeout: 30000
-		});
-	};
-	
-	
-	function mkList(data) {
-		let number = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
-		let num = 0;
-		let html = '';
-		for (var one of data) {
-			const {skey, count } = one;
-			html +=
-				  '<div class="profile-post color-'+number[num]+'">'
-	           +    '<span class="profile-post-numb">0'+ (++num) +'</span>'
-	           + 	 '<div class="profile-post-in">'
-	           +    	'<h3 class="heading-xs"><a href="/?skey='+skey+'">' + skey + '</a></h3>'
-	           + 	 '</div>'
-	       	   + '</div>'
-		}
-		$('#scrollbar').html(html);
-		
-	}
-
+$(function () {
+	popular_Search.init();
+})
 </script>
 </body>
 </html>

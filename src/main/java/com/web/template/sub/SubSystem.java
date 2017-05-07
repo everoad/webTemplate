@@ -1,4 +1,4 @@
-package com.web.template.constance;
+package com.web.template.sub;
 
 import java.io.File;
 import java.net.URLDecoder;
@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,11 +31,12 @@ public class SubSystem {
 	
 	
 	public Boolean checkDevice() {
-		HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-				.getRequest();
+		HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		
 		String userAgent = req.getHeader("user-Agent");
 		String[] mobileos = { "iPhone", "iPad", "Android", "Blackbarray", "windows CE", "Nokia", "Webos", "Opera Mini",
 				"SonyEricssion", "Oprea Mobi", "IEMobile" };
+		
 		int j = -1;
 		Boolean check = false;
 
@@ -87,16 +89,10 @@ public class SubSystem {
 
 			array = new String[] { newName, originalFileName };
 
-			String path = null;
 
-			if (System.getProperty("os.name").contains("Windows")) {
-				path = Const.WINDOWS_UPLOAD_PATH;
-			} else {
-				path = Const.LINUX_UPLOAD_PATH;
-			}
+			File f = new File(Const.UPLOAD_PATH, newName);
 
-			File f = new File(path, newName);
-
+			
 			if (!f.exists()) {
 				f.mkdirs();
 			}
@@ -106,5 +102,22 @@ public class SubSystem {
 		}
 		
 		return array;
+	}
+	
+	
+	
+	
+	
+	public void getUserInfo(HttpServletRequest req) {
+		//이전 페이지
+		String referer = req.getHeader("referer");
+		
+		req.getHeader("host");
+		req.getHeader("user-Agent");
+		String ip = req.getHeader("X-FORWARDED-FOR");
+    	if (ip == null) {
+    		ip = req.getRemoteAddr();
+
+    	}
 	}
 }

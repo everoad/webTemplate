@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.web.template.constance.Const;
 import com.web.template.service.UserService;
+import com.web.template.sub.Const;
 import com.web.template.validator.UserValidator;
 import com.web.template.vo.UserVO;
 

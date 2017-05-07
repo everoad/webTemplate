@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.web.template.constance.Const;
-import com.web.template.constance.SubSystem;
 import com.web.template.service.AdminService;
 import com.web.template.service.BoardService;
+import com.web.template.sub.Const;
+import com.web.template.sub.SubSystem;
 import com.web.template.vo.HomeVO;
 
 @Controller

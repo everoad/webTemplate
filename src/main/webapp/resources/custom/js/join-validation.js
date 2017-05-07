@@ -185,24 +185,19 @@ var JoinValidator = function () {
 
 
     function submit(evt) {
-    	let e = evt;
     	let captchaData = {
 			key: key,
 			value: captchaInput.value
 		}
 
     	ajax('post', captchaCompareUrl, JSON.stringify(captchaData), (err, data) => {
-    	
-    		if (data.result) { 
-    			captchaFlag = true;
-			} else {
-				captchaFlag = false;
-			}
-
+    		//data.result = true or false
+    		captchaFlag = data.result;
+    
     		if (emailFlag === true && nickFlag === true && pwdFlag === true && captchaFlag === true) {
                 joinForm.submit();
             } else {
-                e.preventDefault();
+            	evt.preventDefault();
                 errorDiv.innerHTML = '다시 한번 확인해주세요.'
             }
     	})

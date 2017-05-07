@@ -5,13 +5,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,7 +31,8 @@ public class SearchController {
 	private final static Logger LOGGER = Logger.getLogger(SearchController.class);
 
 	
-	private final Map<String, DeferredResult<List<Map<String, String>>>> responseBodyMap;
+	private final Map<String, DeferredResult<List<Map<String, String>>>> responseBodyMap= new ConcurrentHashMap<>();
+	
 	
 	
 	@Autowired
@@ -36,32 +40,43 @@ public class SearchController {
 
 	
 	
-	public SearchController() {
-		 responseBodyMap = new ConcurrentHashMap<>();
-	}
-
 	
-	
-	
-	@RequestMapping(value="before", method = RequestMethod.GET)
-	public @ResponseBody List<Map<String, String>> getBeforeAll() throws Exception {
-		LOGGER.info("getBeforeAll Method");
+		
+	@RequestMapping(value="init", method = RequestMethod.GET)
+	public @ResponseBody List<Map<String, String>> getInit() throws Exception {
+		LOGGER.info("getInit Method");
+		
 		return searchService.getPopularAll();
 	}
+	
 	
 	
 	
 
 	
 	@RequestMapping(value="after", method= RequestMethod.GET)
-	public @ResponseBody DeferredResult<List<Map<String, String>>> getAfterAll(HttpServletRequest req) throws Exception {
-		LOGGER.info("getAfterAll Method");
-        
-		DeferredResult<List<Map<String, String>>> result = new DeferredResult<>();
-		responseBodyMap.put(getIp(req), result);
+	public @ResponseBody DeferredResult<List<Map<String, String>>> getAfter(@RequestParam("flag") Boolean flag, HttpServletRequest req) throws Exception {
+		LOGGER.info("getAfter Method : flag=" + flag);
 		
+		DeferredResult<List<Map<String, String>>> result = null;
+		
+		String ip = req.getHeader("X-FORWARDED-FOR");
+		
+    	if (ip == null) {
+    		ip = req.getRemoteAddr();
+    	}
+		
+		if (flag) {
+			result = new DeferredResult<>();
+			responseBodyMap.put(ip, result);	
+			
+		} else {
+			responseBodyMap.remove(ip);
+		}
+
 	 	return result;
 	}
+	
 	
 	
 	
@@ -72,20 +87,9 @@ public class SearchController {
 	public void refreshAll(MyEvent event) throws Exception  {
 		LOGGER.info("refreshAll Method");
 		
-		HttpServletRequest req = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
-  
-		String url = req.getRequestURL().toString();
-        String uri = req.getRequestURI();
- 
-        String hostUrl = url.substring(url.lastIndexOf(req.getContextPath())) + "/";
-
-        if (!hostUrl.equals(uri)) {
-        	responseBodyMap.remove(getIp(req));
-        }
-        
 		List<Map<String, String>> list = searchService.getPopularAll();
 		
-		for (String key : responseBodyMap.keySet()) {
+		for (String key : responseBodyMap.keySet()) {	
 			responseBodyMap.get(key).setResult(list);
 			responseBodyMap.remove(key);
 		}
@@ -93,16 +97,7 @@ public class SearchController {
 	
 	
 	
-	
-	private String getIp(HttpServletRequest req) {
-		String ip = req.getHeader("X-FORWARDED-FOR");
-    	if (ip == null) {
-    		ip = req.getRemoteAddr();
-    	}
-    	responseBodyMap.remove(ip);
-    	
-    	return ip;
-	}
+
 
 
 }

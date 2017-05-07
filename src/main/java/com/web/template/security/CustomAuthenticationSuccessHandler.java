@@ -19,10 +19,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth)
 			throws IOException, ServletException {
 		
-		RequestCache requestCache = new HttpSessionRequestCache();
-		
-		SavedRequest savedRequest = requestCache.getRequest(req, res);
-		
 		String check = ((CustomWebAuthenticationDetails) auth.getDetails()).getCookieCheck();
 		String user_email = auth.getName();
 
@@ -43,6 +39,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 			}
 		}
 		
+		
+		RequestCache requestCache = new HttpSessionRequestCache();
+		
+		SavedRequest savedRequest = requestCache.getRequest(req, res);
 		
 		
 		if(savedRequest == null) {

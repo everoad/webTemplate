@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -24,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.web.template.constance.Const;
-import com.web.template.constance.SubSystem;
 import com.web.template.security.CustomUserDetails;
 import com.web.template.service.BoardService;
+import com.web.template.sub.Const;
+import com.web.template.sub.SubSystem;
 import com.web.template.validator.BoardValidator;
 import com.web.template.vo.BoardVO;
 import com.web.template.vo.MenuFirVO;
@@ -61,9 +62,7 @@ public class BoardController {
 									@PathVariable("menu_sec_seq") String menu_sec_seq,
 									@AuthenticationPrincipal CustomUserDetails details,
 									SearchVO searchVo, Model model)  throws Exception {
-		
 
-		
 		LOGGER.info(searchVo.toString());	
 		List<MenuFirVO> menuList = boardService.getMenuList();
 		
