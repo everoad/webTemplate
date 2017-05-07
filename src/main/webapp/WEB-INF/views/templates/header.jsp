@@ -30,7 +30,6 @@
 
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <div class="menu-container">
-               
                 <ul class="nav navbar-nav">
                     <!-- Home -->
                     <li class="${menu_fir_seq eq null and adminType eq null ? 'active' : '' }">

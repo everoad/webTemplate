@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -44,7 +46,7 @@ public class AdminController {
 	
 	@RequestMapping(value="menu", method=RequestMethod.GET)
 	public String editMenuView(Model model) throws Exception {
-		
+
 		model.addAttribute("homeVo", boardService.getHomeInfo());
 		model.addAttribute("menuList", boardService.getMenuList());
 		return "admin/menu";

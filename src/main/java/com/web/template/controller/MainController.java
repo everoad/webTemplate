@@ -53,7 +53,7 @@ public class MainController {
 		
 		List<BoardListVO> list = new ArrayList<>();
 		List<MenuFirVO> menuList = boardService.getMenuList();
-		
+
 		
 		for(MenuFirVO vo : menuList) {
 			searchVo.setMenu_fir_seq(vo.getMenu_fir_seq());
@@ -92,7 +92,7 @@ public class MainController {
 	
 	
 	
-	@Secured(Const.ROLE_ADMIN)
+
 	@RequestMapping(value="profile", method=RequestMethod.GET, produces="application/json")
 	public @ResponseBody Map<String, Object> getProfile(@AuthenticationPrincipal CustomUserDetails user) throws Exception {
 		Map<String, Object> map = userService.getIntroduction();
