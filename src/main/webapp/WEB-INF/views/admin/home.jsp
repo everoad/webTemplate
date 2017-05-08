@@ -25,7 +25,6 @@
 <body>
 	<div class="wrapper">
 		<header>
-			<c:set value="home" var="adminType" />
 			<%@ include file="../templates/header.jsp" %>
 		</header>
 		<section class="bg-color-custom">
@@ -41,10 +40,10 @@
 								<li>
 									<div>
 									     <ul class="pull-left breadcrumb">
-								              <li>
+								              <li class="active">
 								              		<a href="<c:url value="/admin/home" />">Home</a>
 								              </li>
-								              <li class="active">
+								              <li>
 								              		<a href="javascript:void(0);">Menu</a>
 								              </li>
 								           </ul>

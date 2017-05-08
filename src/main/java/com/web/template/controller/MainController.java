@@ -9,10 +9,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +36,9 @@ import com.web.template.vo.SearchVO;
 @RequestMapping("")
 public class MainController {
 	
+	
+	private static final Logger LOGGER = Logger.getLogger(MainController.class);
+	
 	@Autowired
 	private BoardService boardService;
 
@@ -48,7 +54,10 @@ public class MainController {
 	@RequestMapping(method=RequestMethod.GET)
 	public String mainView(@AuthenticationPrincipal CustomUserDetails details,
 										SearchVO searchVo, Model model) throws Exception {
-
+		
+		
+		LOGGER.info(searchVo.toString());
+		
 		BoardListVO boardListVo = null;
 		
 		List<BoardListVO> list = new ArrayList<>();
@@ -71,6 +80,7 @@ public class MainController {
     	
 		model.addAttribute("device", subSystem.checkDevice());
 		model.addAttribute("list", list);
+		
 		model.addAttribute("homeVo", boardService.getHomeInfo());
 		model.addAttribute("menuList", menuList);
 		return "main";
@@ -81,11 +91,13 @@ public class MainController {
 	
 	@RequestMapping(value="about", method=RequestMethod.GET)
 	public String aboutView(Model model) throws Exception {
+		LOGGER.info("aboutView Method");
 		
-		model.addAttribute("homeVo", boardService.getHomeInfo());
-		model.addAttribute("menuList", boardService.getMenuList());
 		model.addAttribute("bestList", boardService.getBestAll());
 		model.addAttribute("recentList", boardService.getRecentAll());
+
+		model.addAttribute("homeVo", boardService.getHomeInfo());
+		model.addAttribute("menuList", boardService.getMenuList());
 		return "about";
 	}
 	
@@ -95,12 +107,14 @@ public class MainController {
 
 	@RequestMapping(value="profile", method=RequestMethod.GET, produces="application/json")
 	public @ResponseBody Map<String, Object> getProfile(@AuthenticationPrincipal CustomUserDetails user) throws Exception {
+		LOGGER.info("getProfile Method");
 		Map<String, Object> map = userService.getIntroduction();
 		
+			
 		if (user != null) {
 			Collection<? extends GrantedAuthority> auths = user.getAuthorities();
 			
-			for(GrantedAuthority auth : auths) {
+			for (GrantedAuthority auth : auths) {
 				if (auth.getAuthority().equals("ROLE_ADMIN"))  {
 					map.put("authorize", true);
 				}	else {
@@ -117,6 +131,8 @@ public class MainController {
 	@Secured(Const.ROLE_ADMIN)
 	@RequestMapping(value="profile", method=RequestMethod.PUT, produces="application/json")
 	public @ResponseBody Map<String, Boolean> updateProfile(@RequestBody Map<String, String> map) throws Exception {
+		LOGGER.info(map.toString());
+		
 		return userService.updateIntroduction(map);
 	}
 	

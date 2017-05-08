@@ -14,6 +14,7 @@ public class CustomWebAuthenticationDetails extends WebAuthenticationDetails {
 	private String social_type;
 	private String user_nick;
 	
+	
 	public CustomWebAuthenticationDetails(HttpServletRequest request) {
 		super(request);
 		cookieCheck = request.getParameter("cookieCheck");

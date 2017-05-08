@@ -10,27 +10,8 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <%@ include file="./templates/css.jsp" %>
-<style>
-	
-.aside-box  {
-	background: white;
-	margin-top: 30px;
-	margin-bottom: 30px;
-	border: 1px solid #ddd;
-	padding: 10px;
-}
+<link rel="stylesheet" href="<c:url value="/resources/custom/css/list.css"/>">
 
-.aside-box h4 {
-	color: #5fb611;
-}
-.search-box {
-	padding: 11px;
-	border: 1px solid #ddd;
-	background: white;
-	text-align: center;
-}
-
-</style>
 </head>
 <body>
 <div class="wrapper">
@@ -55,6 +36,8 @@
 				<section class="col-md-9">
 				
 				<c:forEach items="${list}" var="voList">
+	
+					<c:if test="${ !device }">
 					<article class="menu">
 						
 						<header>
@@ -85,6 +68,43 @@
 						</table>
 						
 					</article>
+					</c:if>
+					<c:if test="${device}">
+						<div class="grid-out-box row profile">
+						<c:forEach items="${voList.boardList}" var="vo">
+							<c:url var="boardUrl" value="/board/${vo.menu_fir_seq}/${vo.menu_sec_seq}/${vo.board_seq}" />
+						    <article class="grid-article col-md-4">
+						    	<div class="gridbox">
+						    		<c:if test="${vo.front_img ne null}">
+							        <div class="easy-block-v1">
+							        	<div>
+							    	        <a href="${boardUrl}"><img class="img-responsive" src="${vo.front_img }" alt=""></a>
+							      		</div>
+							        </div>
+							        </c:if>
+						            <header class="projects">
+			                            <h2><a class="color-dark" href="${boardUrl}">${vo.title }</a></h2>
+			                             <div class="grid-content">
+			                            	${vo.content}
+		                            	</div>
+			                            <ul class="list-unstyled list-inline blog-info-v2">
+			                                <li>By: <a class="color-green" href="#">${vo.user_nick }</a></li>
+			                                <li><i class="fa fa-clock-o"></i>${vo.reg_date }</li>
+			                            </ul>
+			                        </header>
+			                       
+							        <footer class="project-share">
+							            <ul class="list-inline comment-list-v2">
+							                <li><i class="fa fa-eye"></i> <a href="#">${vo.hit_count }</a></li>
+							                <li><i class="fa fa-comments"></i> <a href="#">${vo.reply_count }</a></li>
+							            </ul>    
+							        </footer>
+						        </div>
+						    </article>
+					
+					    </c:forEach>
+						</div>
+						</c:if>
 				</c:forEach>
 				</section>
 				<aside class="profile col-md-3">
@@ -109,6 +129,26 @@
 <script>
 $(function () {
 	popular_Search.init();
+	
+	let gridContents = $('.grid-content');
+	for (let i = 0; i < gridContents.length; i++) {
+		let res = doRemoveTag(gridContents[i].innerHTML);
+		res = res.trim();
+		if (res.length > 6) {
+    		res = res.substr(0, 100) + '...';
+		}
+		gridContents[i].innerHTML = res;    			    		
+	}
+    	
+   	
+	function removeTag( html ) {
+		return html.replace(/(<([^>]+)>)/gi, "");
+	}
+
+	function doRemoveTag(beforeText) {
+		return removeTag( beforeText );
+		
+	}
 })
 </script>
 </body>

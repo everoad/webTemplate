@@ -46,7 +46,7 @@
 	</select>
 	
 	<select id="getMainList" parameterType="SearchVO" resultType="BoardVO">
-		SELECT board_seq, title, date_format(reg_date, '%y-%m-%d') AS reg_date, hit_count, reply_count, front_img, user_nick, board.menu_fir_seq, board.menu_sec_seq, menu_sec_name 
+		SELECT board_seq, title, content, date_format(reg_date, '%y-%m-%d') AS reg_date, hit_count, reply_count, front_img, user_nick, board.menu_fir_seq, board.menu_sec_seq, menu_sec_name 
 		FROM board
 		JOIN user
 		ON user.user_email = board.user_email

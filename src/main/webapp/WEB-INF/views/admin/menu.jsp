@@ -15,7 +15,6 @@
 <body>
 <div class="wrapper">
 	<header>
-		<c:set value="menu" var="adminType" />
 		<%@ include file="../templates/header.jsp" %>
 	</header>
 	<section class="bg-color-custom">

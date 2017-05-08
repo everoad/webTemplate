@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="s" %>
 
 <!--=== Header v7 Left ===-->
@@ -16,9 +17,10 @@
                 <span class="icon-bar"></span>
             </button>
             <!-- End Toggle -->
-
+		
             <!-- Logo -->
             <div class="logo">
+            	
                 <a href="<c:url value="/" />">
                     <img id="logo-header" src="<c:url value="/uploads/${homeVo.home_logo}" />" alt="Logo">
                 </a>
@@ -27,17 +29,17 @@
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-
+		<c:set var="uri" value="${requestScope['javax.servlet.forward.request_uri']}" />
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <div class="menu-container">
                 <ul class="nav navbar-nav">
                     <!-- Home -->
-                    <li class="${menu_fir_seq eq null and adminType eq null ? 'active' : '' }">
+                    <li class="${uri eq '/' ? 'active' : '' }">
                         <a href="<c:url value="/" />">
                             Home
                         </a>
                     </li>
-                    <li>
+                    <li class="${ fn:contains(uri, 'about') ? 'active' : '' }">
                     	<a href="<c:url value="/about" />">
                     		About
                     	</a>
@@ -62,15 +64,15 @@
 					</c:forEach>
 					
 					<s:authorize access="hasAnyRole('ADMIN')">
-						<li class="dropdown ${menu_fir_seq eq null and adminType ne null ? 'active open' : ''}">
+						<li class="dropdown ${ fn:contains(uri, 'admin') ? 'active open' : ''}">
 							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
 								Admin
 							</a>
 							 <ul class="dropdown-menu">
-							 	<li class="${adminType eq 'home' ? 'active' : '' }">
+							 	<li class="${ fn:contains(uri, 'home') ? 'active' : '' }">
 							 		<a href="<c:url value="/admin/home"/>">Home</a>
 							 	</li>
-							 	<li class="${adminType eq 'menu' ? 'active' : '' }">
+							 	<li class="${ fn:contains(uri, 'menu') ? 'active' : '' }">
 							 		<a href="<c:url value="/admin/menu"/>">Menu</a>
 							 	</li>
 							 </ul>

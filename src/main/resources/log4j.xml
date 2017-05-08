@@ -28,15 +28,15 @@
 	</appender>
 
 	<!-- Application Loggers -->
-	<!-- <logger name="com.web.template" additivity="false">
+	<logger name="com.web.template" additivity="false">
 		<level value="INFO" />
 		<appender-ref ref="info-console"/>
-	</logger> -->
+	</logger>
  
-	<logger name="com.web.template" additivity="false">
+	<!-- <logger name="com.web.template" additivity="false">
 		<level value="DEBUG" />
 		<appender-ref ref="rollingFile" />
-	</logger>
+	</logger> -->
  
 	
 	<!-- 3rdparty Loggers -->
