@@ -42,8 +42,7 @@ var JoinValidator = function () {
         
 
 
-    //Message
-   
+
         	
     function init(params) {
         joinForm = params.joinForm

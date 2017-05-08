@@ -1,10 +1,13 @@
 package com.web.template.service;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.io.FilenameFilter;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,18 +34,23 @@ public class AdminService {
 	private BoardMapper boardService;
 
 
+	
+	
 	public List<Map<String, Object>> getMenuList() {
 
 		List<Map<String, Object>> menuFir = adminMapper.getMenuFir();
 
 		for (Map<String, Object> fir : menuFir) {
-			String menu_fir_seq = fir.get("menu_fir_seq") + "";
+			String menu_fir_seq = fir.get("menu_fir_seq").toString();
 			fir.put("menu_sec", adminMapper.getMenuSec(menu_fir_seq));
 		}
 
 		return menuFir;
 	}
 
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	@CacheEvict(value = "getMenuList", key = "1")
 	@Transactional
@@ -52,25 +60,32 @@ public class AdminService {
 		List<Map<String, Object>> deleteSec = menuList.get("del_menu_sec");
 
 		for (Map<String, Object> map : firArr) {
-			String menu_fir_seq = map.get("menu_fir_seq") + "";
+			String menu_fir_seq = map.get("menu_fir_seq").toString();
 			// 대분류 추가.
 			if (menu_fir_seq.contains("new")) {
 				adminMapper.addMenuFir(map);
+				
 				// 새로 추가된 대분류의 중분류 추가.
-				for (Map<String, String> menu_sec : (List<Map<String, String>>) map.get("menu_sec")) {
+				List<Map<String, String>> menu_sec_list = (List<Map<String, String>>) map.get("menu_sec");
+				
+				for (Map<String, String> menu_sec : menu_sec_list) {
 					// menu_fir_seq에 맞게 추가.
 					if (menu_fir_seq.equals(menu_sec.get("menu_fir_seq"))) {
-						menu_sec.put("menu_fir_seq", map.get("menu_fir_seq") + "");
+						menu_sec.put("menu_fir_seq", map.get("menu_fir_seq").toString());
 						adminMapper.addMenuSec(menu_sec);
 					}
 				}
+				
 				// 기존 대분류 수정.
 			} else {
+				
 				adminMapper.editMenuFir(map);
 				// 중분류 꺼내기.
-				for (Map<String, String> menu_sec : (List<Map<String, String>>) map.get("menu_sec")) {
+				List<Map<String, String>> menu_sec_list = (List<Map<String, String>>) map.get("menu_sec");
+				
+				for (Map<String, String> menu_sec : menu_sec_list) {
 					// 기존 대분류의 중분류 추가.
-					if ((menu_sec.get("menu_sec_seq") + "").equals("new")) {
+					if ((menu_sec.get("menu_sec_seq").toString()).equals("new")) {
 						adminMapper.addMenuSec(menu_sec);
 						// 기존 대분류의 기존 중분류 수정.
 					} else {
@@ -83,7 +98,6 @@ public class AdminService {
 		for (Map<String, Object> map : deleteSec) {
 			// 중분류 삭제, CASCADE로 글 삭제.
 			adminMapper.deleteMenuSec(map);
-
 		}
 
 		for (Map<String, Object> map : deleteFir) {
@@ -92,10 +106,15 @@ public class AdminService {
 		}
 	}
 
+	
+	
+	
 	@CacheEvict(value = "getHomeInfo", key = "0")
 	public void editHome(HomeVO homeVo) {
 		adminMapper.editHome(homeVo);
 	}
+	
+	
 	
 	
 	
@@ -104,63 +123,54 @@ public class AdminService {
 		
 		//따로 이미지를 관리하는 테이블이 없으므로 content에서 img를 추출.
 		List<String> contents = boardService.getBoardAll();
-		//삽입에 유리한 LinkedList
-		List<String> list = new LinkedList<>();
-		String imgName = null;
-		Matcher match = null;
+
+		//삽입, 검색이 빠른 HashSet 사용.
+		Set<String> namesInContent = new HashSet<>();
+		
 		Pattern pattern  =  Pattern.compile("src=[\"']?([^>\"']+)[\"']?[^>]");	
 
 		for (String content : contents) {
-			match = pattern.matcher(content);
+			Matcher match = pattern.matcher(content);
 		
-			while(match.find()) {
-				imgName = match.group(0).replaceAll("src=", "").replaceAll("/uploads/", "").replaceAll("\"", "");
-				list.add(imgName);
+			while (match.find()) {
+				String imgName = match.group(0).replaceAll("src=", "").replaceAll("/uploads/", "").replaceAll("\"", "");
+				namesInContent.add(imgName);
 			}
 		
 		}
 		
 		
 		HomeVO homeVo = boardService.getHomeInfo();
-		list.add(homeVo.getHome_img());
-		list.add(homeVo.getHome_logo());
-		
 
+		namesInContent.add(homeVo.getHome_img());
+		namesInContent.add(homeVo.getHome_logo());
 		
-		//upload 폴더에서 이미지 파일 목록 가져오기
-		String path = Const.UPLOAD_PATH;
-		//삽입, 삭제가 용이한 LinkedList로 이루어진 LinkedHashMap 사용.
-		Map<String, File> map = new LinkedHashMap<>();
 		
-		File dir = new File(path);
+		
+		File dir = new File(Const.UPLOAD_PATH);
 		
 		if (dir.exists()) {
-			//upload 폴더에서 파일 목록을 가져온다.
-			File[] files = dir.listFiles();
-			
-			//파일 이름과 파일을 LinkedHashMap에 저장
-			for (File file : files) {
-				map.put(file.getName(), file);
-			}
-			
-			//만약 DB 데이터와 일치하는 이름이 있다면 Map에서 삭제
-			for (String dbName : list) {
-				if (map.containsKey(dbName)) {
-					map.remove(dbName);
-				}
-			}
 		
-			//Map에 남아있는 파일들은 더이상 사용되는 파일이 아니므로 삭제.
-			for (String key : map.keySet()) {
-				map.get(key).delete();
-			}
+			String[] removeImgNames = dir.list(new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File dir, String name) {
+					//DB에서 가져온 img 파일 이름들과 폴더에 있는 파일 이름을 비교.
+					if (namesInContent.contains(name)) {					
+						return false;
+					} else {
+						return true;	
+					}
+				}
+				
+			});
 			
+			for (String imgName : removeImgNames) {
+				new File(Const.UPLOAD_PATH, imgName).delete();
+			}
+									
 		}
 		
 	}
-	
-	
-	
-	
 
 }

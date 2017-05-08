@@ -10,6 +10,7 @@ var popular_Search = function() {
 	let flag = true;
 	
 	
+	
 	function init() {
 		
 		window.onunload = function () {
@@ -28,7 +29,7 @@ var popular_Search = function() {
 
 
 	
-	
+
 	function poll() {
 		$.ajax({
 			url : afterUrl,

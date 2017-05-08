@@ -62,6 +62,7 @@ public class SubSystem {
 		Map<String, String> map = new HashMap<String, String>();
 		
 		map.put("skey", skey);
+		
 		if (details != null) {
 			map.put("user_email", details.getUser_email());
 		} else {

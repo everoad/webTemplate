@@ -31,7 +31,7 @@ public class SearchController {
 	private final static Logger LOGGER = Logger.getLogger(SearchController.class);
 
 	
-	private final Map<String, DeferredResult<List<Map<String, String>>>> responseBodyMap= new ConcurrentHashMap<>();
+	private final Map<String, DeferredResult<List<Map<String, String>>>> responseBodyMap = new ConcurrentHashMap<>();
 	
 	
 	
@@ -60,6 +60,7 @@ public class SearchController {
 		
 		DeferredResult<List<Map<String, String>>> result = null;
 		
+		//동일 클라이언트에 대한 중복 요청을 방지하기 위해 ip를 key값으로 저장.
 		String ip = req.getHeader("X-FORWARDED-FOR");
 		
     	if (ip == null) {
